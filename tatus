@@ -1,0 +1,201 @@
+[33mcommit e5b07f697f6291d7ba91ce13feed52e641c0ad07[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Johneh93 <arsenalidogun@gmail.com>
+Date:   Wed Jun 14 22:10:43 2023 +0100
+
+    first commit
+
+[1mdiff --git a/autocomplete.js b/autocomplete.js[m
+[1mnew file mode 100644[m
+[1mindex 0000000..5786a9a[m
+[1m--- /dev/null[m
+[1m+++ b/autocomplete.js[m
+[36m@@ -0,0 +1,74 @@[m
+[32m+[m[32mconst createAutoComplete = ({ root, renderOption }) => {[m
+[32m+[m[32m   //const root = document.querySelector('.autocomplete');[m
+[32m+[m[32m    root.innerHTML = `[m
+[32m+[m[32m    <label><b>Search for a Movie</b></label>[m
+[32m+[m[32m    <input class ="input"/>[m
+[32m+[m[32m    <div class= "dropdown is-active">[m
+[32m+[m[32m     <div class="dropdown-menu">[m
+[32m+[m[32m      <div class="dropdown-content results">[m
+[32m+[m[32m      </div>[m
+[32m+[m[32m     </div>[m
+[32m+[m[32m     </div>[m
+[32m+[m[32m    `;[m
+[32m+[m[41m    [m
+[32m+[m[32m    const input = root.querySelector('input');[m
+[32m+[m[32m    const dropdown = root.querySelector('.dropdown');[m
+[32m+[m[32m    const resultsWrapper = root.querySelector('.results');[m
+[32m+[m[41m    [m
+[32m+[m[41m    [m
+[32m+[m[32m    //this targets the value[m
+[32m+[m[32m    const onInput = async event => {[m[41m   [m
+[32m+[m[32m       const movies = await fetchData(event.target.value);[m
+[32m+[m[41m      [m
+[32m+[m[41m    [m
+[32m+[m[32m     if(!movies.length){[m
+[32m+[m[32m        dropdown.classList.remove('is-active');[m
+[32m+[m[32m        return;[m
+[32m+[m[32m     }[m
+[32m+[m[41m    [m
+[32m+[m[32m       resultsWrapper.innerHTML='';[m
+[32m+[m[41m    [m
+[32m+[m[32m       dropdown.classList.add('is-active');[m
+[32m+[m[41m    [m
+[32m+[m[32m//Always show in Image[m
+[32m+[m[32m      for (let movie of movies){[m
+[32m+[m[41m    [m
+[32m+[m[41m    [m
+[32m+[m[32m        const option = document. createElement('a');[m
+[32m+[m[41m    [m
+[32m+[m[32m      //  const imgSrc = movie.Poster === 'N/A' ?  '' : movie.Poster;[m
+[32m+[m[32m        option.classList.add('dropdown-item');[m
+[32m+[m[32m        option.innerHTML = renderOption(movie);[m
+[32m+[m[41m       [m
+[32m+[m[32m        //drop the dropdown and show the movie[m
+[32m+[m[32m        option.addEventListener('click', ()=>{[m
+[32m+[m[32m           dropdown.classList.remove('is-active');[m
+[32m+[m[41m    [m
+[32m+[m[32m           //displays movie title on the input[m
+[32m+[m[32m           input.value =movie.Title;[m
+[32m+[m[32m           onMovieSelect(movie);[m
+[32m+[m[32m        });[m
+[32m+[m[41m    [m
+[32m+[m[41m    [m
+[32m+[m[32m        resultsWrapper.appendChild(option );[m
+[32m+[m[32m        //console.log(movies);[m
+[32m+[m[41m    [m
+[32m+[m[32m      }[m
+[32m+[m[41m    [m
+[32m+[m[41m     [m
+[32m+[m[32m    };[m
+[32m+[m[41m    [m
+[32m+[m[41m    [m
+[32m+[m[32m    input.addEventListener('input', debounce(onInput,100));[m
+[32m+[m[41m     [m
+[32m+[m[32m    //tells us what was clicked[m[41m [m
+[32m+[m[32m    document.addEventListener('click', event =>{[m
+[32m+[m[32m        //if(!root.contains(event.target)){[m
+[32m+[m[32m            dropdown.classList.remove("is-active");[m
+[32m+[m[32m        }[m
+[32m+[m[32m        //console.log(event.target);[m
+[32m+[m[41m        [m
+[32m+[m[32m    );[m
+[32m+[m
+[32m+[m
+[32m+[m[32m};[m
+\ No newline at end of file[m
+[1mdiff --git a/index.html b/index.html[m
+[1mnew file mode 100644[m
+[1mindex 0000000..138e8c7[m
+[1m--- /dev/null[m
+[1m+++ b/index.html[m
+[36m@@ -0,0 +1,66 @@[m
+[32m+[m[32m<!DOCTYPE html>[m
+[32m+[m[32m<html>[m
+[32m+[m[32m  <head>[m
+[32m+[m[32m    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>[m
+[32m+[m[32m    <link[m
+[32m+[m[32m      rel="stylesheet"[m
+[32m+[m[32m      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"[m
+[32m+[m[32m    />[m
+[32m+[m[32m    <link[m
+[32m+[m[32m      rel="stylesheet"[m
+[32m+[m[32m      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.css"[m
+[32m+[m[32m    />[m
+[32m+[m[32m    <link rel="stylesheet" href="style.css" />[m
+[32m+[m[32m  </head>[m
+[32m+[m[41m  [m
+[32m+[m[32m  <body>[m
+[32m+[m[32m    <section class="hero is-primary is-bold">[m
+[32m+[m[32m      <div class="hero-body">[m
+[32m+[m[32m        <div class="container">[m
+[32m+[m[32m          <h1 class="title">[m
+[32m+[m[32m            Movie Finder[m
+[32m+[m[32m            <span class="icon">[m
+[32m+[m[32m              <i class="fas fa-film"></i>[m
+[32m+[m[32m            </span>[m
+[32m+[m[32m          </h1>[m[41m         [m
+[32m+[m[32m        </div>[m
+[32m+[m[32m        <h3 class="signin">[m
+[32m+[m[32m          Signin[m[41m [m
+[32m+[m[32m          <span class="icon">[m
+[32m+[m[32m            <i class="fas profile"></i>[m
+[32m+[m[32m          </span>[m
+[32m+[m[32m        </h3>[m
+[32m+[m[32m        <h3 class="login">[m
+[32m+[m[32m          Login[m
+[32m+[m[32m          <span class="icon">[m
+[32m+[m[32m            <i class="fas fa-film"></i>[m
+[32m+[m[32m          </span>[m
+[32m+[m[32m        </h3>[m
+[32m+[m[32m      </div>[m
+[32m+[m[32m    </section>[m
+[32m+[m[32m    <div class="container">[m
+[32m+[m
+[32m+[m[32m      <div class= "autocomplete"></div>[m
+[32m+[m[32m      <div id="summary"></div>[m
+[32m+[m[32m       <!-- <div class="dropdown is-active">[m
+[32m+[m[32m        <input/>[m
+[32m+[m[32m        <div class="dropdown-menu">[m
+[32m+[m[32m          <div class="dropdown-content">[m
+[32m+[m[32m            <a class="dropdown-item">Movie #1</a>[m
+[32m+[m[32m            <a class="dropdown-item">Movie #2</a>[m
+[32m+[m[32m            <a class="dropdown-item">Movie #3</a>[m
+[32m+[m[32m          </div>[m
+[32m+[m[41m        [m
+[32m+[m[41m        [m
+[32m+[m
+[32m+[m[32m        </div>[m
+[32m+[m[32m       </div> -->[m
+[32m+[m[32m    <div id="target"></div>[m
+[32m+[m
+[32m+[m[32m    </div>[m
+[32m+[m[32m    <script src=./utils.js></script>[m
+[32m+[m[32m    <script src=./autocomplete.js></script>[m
+[32m+[m[32m    <script src=./index.js></script>[m
+[32m+[m[41m    [m
+[32m+[m[32m  </body>[m
+[32m+[m[32m</html>[m
+[1mdiff --git a/index.js b/index.js[m
+[1mnew file mode 100644[m
+[1mindex 0000000..3d80e99[m
+[1m--- /dev/null[m
+[1m+++ b/index.js[m
+[36m@@ -0,0 +1,181 @@[m
+[32m+[m[32m//1 Register the Api[m
+[32m+[m[32mconst fetchData = async searchTerm =>{[m
+[32m+[m[32m    const response = await axios.get('http://www.omdbapi.com/',{[m
+[32m+[m[32m       params:{[m
+[32m+[m[32m        apikey: '1ee2c638',[m
+[32m+[m[32m        s:searchTerm,[m
+[32m+[m[41m        [m
+[32m+[m[32m       }[m[41m [m
+[32m+[m[32m    });[m
+[32m+[m
+[32m+[m[32mif (response.data.Error){[m
+[32m+[m[32m    return [];[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m    return response.data.Search;[m
+[32m+[m[32m    //console.log(response.data);[m
+[32m+[m[32m};[m
+[32m+[m
+[32m+[m[32mcreateAutoComplete({[m
+[32m+[m[32m  root:document.querySelector('.autocomplete'),[m
+[32m+[m[32m  //display the movie[m[41m [m
+[32m+[m[32m  renderOption(movie){[m
+[32m+[m[32m    const imgSrc =movie.Poster=== 'N/A' ? '' : movie.Poster;[m
+[32m+[m[32m    return `[m
+[32m+[m[32m    <img src=" ${imgSrc}" />[m
+[32m+[m[32m    ${movie.Title} (${movie.Year})[m
+[32m+[m[32m    `;[m
+[32m+[m[32m  }[m
+[32m+[m[32m});[m
+[32m+[m
+[32m+[m[32m//2 create the input ,body and dropdown using JS functions and also validate the variable[m
+[32m+[m
+[32m+[m[32m// createAutoComplete({[m
+[32m+[m[32m//   root: document.querySelector('.autocomplete'),[m
+[32m+[m[32m//   renderOption(movie){[m
+[32m+[m[32m//     const imgSrc = movie.Poster ==='N/A'?'': movie.Post
