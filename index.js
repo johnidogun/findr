@@ -1,5 +1,38 @@
 //1 Register the Api
-const fetchData = async searchTerm =>{
+// const fetchData = async searchTerm =>{
+//     const response = await axios.get('http://www.omdbapi.com/',{
+//        params:{
+//         apikey: '1ee2c638',
+//         s:searchTerm,
+        
+//        } 
+//     });
+
+// if (response.data.Error){
+//     return [];
+// }
+
+//     return response.data.Search;
+//     //console.log(response.data);
+// };
+const autocompleteConfig ={
+  renderOption(movie){
+    const imgSrc =movie.Poster=== 'N/A' ? '' : movie.Poster;
+    return `
+    <img src=" ${imgSrc}" />
+    ${movie.Title} (${movie.Year})
+    `;
+  },
+  onOptionSelect(movie){
+    onMovieSelect(movie);
+  },
+  //Returns the movie title when a user clicks on it
+  inputValue(movie){
+    return movie.Title;
+
+  },
+  //Another way to verify the api
+  async fetchData(searchTerm){
     const response = await axios.get('http://www.omdbapi.com/',{
        params:{
         apikey: '1ee2c638',
@@ -14,19 +47,21 @@ if (response.data.Error){
 
     return response.data.Search;
     //console.log(response.data);
-};
+}
 
+};
 createAutoComplete({
-  root:document.querySelector('.autocomplete'),
-  //display the movie 
-  renderOption(movie){
-    const imgSrc =movie.Poster=== 'N/A' ? '' : movie.Poster;
-    return `
-    <img src=" ${imgSrc}" />
-    ${movie.Title} (${movie.Year})
-    `;
-  }
+  ...autocompleteConfig,
+  root: document.querySelector('#left-autocomplete'),
+  //display the movie or shows how it is rend ered renders an image element with the movie title and year it was produced
+ 
 });
+// createAutoComplete({
+//   ...autocompleteConfig,
+//   root: document.querySelector('#right-autocomplete'),
+  //display the movie or shows how it is rendered renders an image element with the movie title and year it was produced
+ 
+//});
 
 //2 create the input ,body and dropdown using JS functions and also validate the variable
 
